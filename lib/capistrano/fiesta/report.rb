@@ -23,14 +23,16 @@ module Capistrano
           ERB.new(File.read(template), nil, '-').result(binding)
         end
 
+        def strip_tags(title)
+          title.sub(/\[Delivers #\d+\]\z/, '').strip
+        end
+
         def template
           File.join(File.expand_path('../../templates', __FILE__), 'fiesta.erb')
         end
 
         def merged_pull_requests
-          github.search_issues("base:master repo:#{repo} merged:>#{last_released_at}").items.map do |pr|
-            pr.title.sub(/\[.+\]/, '')
-          end
+          @merged_pull_requests ||= github.search_issues("base:master repo:#{repo} merged:>#{last_released_at}").items
         end
 
         def repo

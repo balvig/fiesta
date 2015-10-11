@@ -1,5 +1,5 @@
 Released:
 
-<% merged_pull_requests.sort.each do |pr| -%>
-- <%= pr %>
+<% merged_pull_requests.sort_by(&:title).each do |pr| -%>
+- <%= strip_tags pr.title %>
 <% end -%>
