@@ -6,7 +6,7 @@ namespace :fiesta do
       releases = capture("ls #{releases_path}")
       last_release ||= releases.split("\n").sort.last
     end
-    Capistrano::Fiesta::Report.new(last_release).run if last_release
+    Capistrano::Fiesta::Report.new(repo_url, last_release: last_release).run if last_release
   end
 end
 

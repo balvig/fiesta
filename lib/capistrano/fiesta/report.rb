@@ -6,9 +6,8 @@ require "yaml"
 module Capistrano
   module Fiesta
     class Report
-      def initialize(last_release)
-        @last_release = last_release
-        @repo = "cookpad/global-web"
+      def initialize(github_url, last_release: Time.now)
+        @github_url, @last_release = github_url, last_release
       end
 
       def run
@@ -29,9 +28,13 @@ module Capistrano
         end
 
         def merged_pull_requests
-          github.search_issues("base:master repo:#{@repo} merged:>#{last_released_at}").items.map do |pr|
+          github.search_issues("base:master repo:#{repo} merged:>#{last_released_at}").items.map do |pr|
             pr.title.sub(/\[.+\]/, '')
           end
+        end
+
+        def repo
+          @github_url.match(/github.com[:\/](\S+\/\S+)\.git/)[1]
         end
 
         def last_released_at
