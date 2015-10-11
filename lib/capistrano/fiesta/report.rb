@@ -15,7 +15,7 @@ module Capistrano
         file = Tempfile.new(['fiesta', '.md'])
         file << output
         file.close
-        `open #{file.path}`
+        system(ENV["EDITOR"] || "vi", file.path)
       end
 
       private

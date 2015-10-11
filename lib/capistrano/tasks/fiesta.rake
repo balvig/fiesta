@@ -1,4 +1,5 @@
 namespace :fiesta do
+  desc 'Generate a release report for pasting in Slack'
   task :report do
     last_release = nil
     on roles(:web) do
