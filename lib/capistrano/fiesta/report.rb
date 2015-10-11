@@ -1,3 +1,4 @@
+require "capistrano/fiesta/feature"
 require "erb"
 require "tempfile"
 require "octokit"
@@ -17,14 +18,14 @@ module Capistrano
         system(ENV["EDITOR"] || "vi", file.path)
       end
 
+      def features
+        @features ||= merged_pull_requests.map { |pr| Feature.new(pr) }
+      end
+
       private
 
         def output
           ERB.new(File.read(template), nil, '-').result(binding)
-        end
-
-        def strip_tags(title)
-          title.sub(/\[Delivers #\d+\]\z/, '').strip
         end
 
         def template
@@ -32,7 +33,7 @@ module Capistrano
         end
 
         def merged_pull_requests
-          @merged_pull_requests ||= github.search_issues("base:master repo:#{repo} merged:>#{last_released_at}").items
+          github.search_issues("base:master repo:#{repo} merged:>#{last_released_at}").items
         end
 
         def repo

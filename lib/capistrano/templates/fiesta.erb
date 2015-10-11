@@ -1,5 +1,8 @@
 Released:
 
-<% merged_pull_requests.sort_by(&:title).each do |pr| -%>
-- <%= strip_tags pr.title %>
+<% features.sort_by(&:title).each do |feature| -%>
+- <%= feature.title %>
+<% feature.images.each do |image| -%>
+  - <%= image %>
+<% end -%>
 <% end -%>
