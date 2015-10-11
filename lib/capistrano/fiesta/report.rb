@@ -29,17 +29,17 @@ module Capistrano
         end
 
         def merged_pull_requests
-          github.search_issues("base:master repo:#{@repo} merged:>=#{last_released_at}").items.map do |pr|
+          github.search_issues("base:master repo:#{@repo} merged:>#{last_released_at}").items.map do |pr|
             pr.title.sub(/\[.+\]/, '')
           end
         end
 
-        def github
-          @github ||= Octokit::Client.new(login: config["user"], access_token: config["oauth_token"])
+        def last_released_at
+          Time.parse(@last_release + 'Z00:00').iso8601
         end
 
-        def last_released_at
-          Time.parse(@last_release).iso8601
+        def github
+          @github ||= Octokit::Client.new(login: config["user"], access_token: config["oauth_token"])
         end
 
         def config

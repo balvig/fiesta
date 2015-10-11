@@ -1,31 +1,12 @@
 namespace :fiesta do
-  namespace :deploy do
-    task :starting do
-      on roles(:web) do
-        releases = capture("ls #{File.join(fetch(:deploy_to), 'releases')}")
-        if last_release = releases.split("\n").sort.last
-          Capistrano::Fiesta::Report.new(last_release).run
-        end
-      end
-
-
-      #releases = capture("ls #{File.join(fetch(:deploy_to), 'releases')}")
-      #if this_host_last_release = releases.split("\t").sort.last
-      ## Not a cold start
-      #end
-      #if fetch(:slack_run_starting)
-      #run_locally do
-      #end
-      #end
+  task :report do
+    last_release = nil
+    on roles(:web) do
+      releases = capture("ls #{releases_path}")
+      last_release = releases.split("\n").sort.last
     end
-
-    task :finished do
-      #if fetch(:slack_run_finished)
-      #end
-      #end
-    end
+    Capistrano::Fiesta::Report.new(last_release).run if last_release
   end
 end
 
-#after 'deploy:starting', 'fiesta:deploy:starting'
-#after 'deploy:finished', 'fiesta:deploy:finished'
+# after 'deploy:finished', 'fiesta:report'
