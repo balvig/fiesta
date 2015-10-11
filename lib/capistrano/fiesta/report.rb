@@ -21,7 +21,7 @@ module Capistrano
       private
 
         def output
-          ERB.new(File.read(template), nil, '-').result(instance_eval { binding })
+          ERB.new(File.read(template), nil, '-').result(binding)
         end
 
         def template
