@@ -1,11 +1,8 @@
 require 'test_helper'
 
 class Capistrano::FiestaTest < Minitest::Test
-  def test_that_it_has_a_version_number
-    refute_nil ::Capistrano::Fiesta::VERSION
-  end
-
-  def test_it_does_something_useful
-    assert false
+  def test_last_released_at
+    release = ::Capistrano::Fiesta::Report.new('20151009145023')
+    assert_equal '2015-10-09T14:50:23+02:00', release.last_released_at
   end
 end
