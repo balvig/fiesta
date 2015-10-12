@@ -2,12 +2,18 @@ require 'test_helper'
 
 module Capistrano::Fiesta
   class ReportTest < Minitest::Test
-    def test_last_released_at
-      assert_equal "2015-10-09T14:50:23Z", report.send(:last_released_at)
-    end
+    def test_output
+      query = "base:master repo:balvig/capistrano-fiesta merged:>2015-10-09T14:50:23Z"
+      response = { items: [{ title: "New login [Delivers #123]", body: "" }] }
+      github = stub_request(:get, "https://api.github.com:443/search/issues").with(query: { q: query }).to_return_json(response)
 
-    def test_repo
-      assert_equal "balvig/capistrano-fiesta", report.send(:repo)
+      output = <<-OUTPUT
+*New Release*
+
+:small_orange_diamond: New login
+      OUTPUT
+      assert_equal output, report.output
+      assert_requested github
     end
 
     private

@@ -22,11 +22,11 @@ module Capistrano
         @stories ||= merged_pull_requests.map { |pr| Story.new(pr) }
       end
 
-      private
+      def output
+        ERB.new(File.read(template), nil, '-').result(binding)
+      end
 
-        def output
-          ERB.new(File.read(template), nil, '-').result(binding)
-        end
+      private
 
         def template
           File.join(File.expand_path('../../templates', __FILE__), 'fiesta.erb')
