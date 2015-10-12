@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["jens@balvig.com"]
 
   spec.summary       = %q{Celebrate your releases!}
-  spec.description   = %q{Get a list of merged PRs since last deploy}
+  spec.description   = %q{Automatically creates a report of merged PRs since last deploy for pasting into slack}
   spec.homepage      = "https://github.com/balvig/capistrano-fiesta"
   spec.license       = "MIT"
 
