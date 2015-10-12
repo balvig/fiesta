@@ -10,7 +10,7 @@ module Capistrano
       end
 
       def images
-        @pr.body.scan(/https?:\/\/\S*\.(?:png|jpg)/i)
+        @pr.body.scan(/https?:\/\/\S*\.(?:png|jpg|gif)/i)
       end
     end
   end
