@@ -1,6 +1,6 @@
 module Capistrano
   module Fiesta
-    class Feature
+    class Story
       def initialize(pr)
         @pr = pr
       end

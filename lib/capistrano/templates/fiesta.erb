@@ -1,8 +1,8 @@
 :rocket: *New Release* :rocket:
 
-<% features.sort_by(&:title).each do |feature| -%>
-• <%= feature.title %>
-<% feature.images.each do |image| -%>
+<% stories.sort_by(&:title).each do |story| -%>
+• <%= story.title %>
+<% story.images.each do |image| -%>
     - <%= image %>
 <% end -%>
 <% end -%>

@@ -1,4 +1,4 @@
-require "capistrano/fiesta/feature"
+require "capistrano/fiesta/story"
 require "erb"
 require "tempfile"
 require "octokit"
@@ -18,8 +18,8 @@ module Capistrano
         system(ENV["EDITOR"] || "vi", file.path)
       end
 
-      def features
-        @features ||= merged_pull_requests.map { |pr| Feature.new(pr) }
+      def stories
+        @stories ||= merged_pull_requests.map { |pr| Story.new(pr) }
       end
 
       private
