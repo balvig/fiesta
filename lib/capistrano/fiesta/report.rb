@@ -45,13 +45,22 @@ module Capistrano
         end
 
         def github
-          @github ||= Octokit::Client.new(login: config["user"], access_token: config["oauth_token"])
+          @github ||= Octokit::Client.new(config)
         end
 
         def config
-          hub_config_path = Dir.home + "/.config/hub"
-          hub_config = YAML.load_file hub_config_path
-          hub_config["github.com"].first
+          { access_token: hub_config["oauth_token"] }
+        end
+
+        def hub_config_path
+          Dir.home + "/.config/hub"
+        end
+
+        def hub_config
+          YAML.load_file(hub_config_path)["github.com"].first
+        rescue Errno::ENOENT
+          puts "No github config found at #{hub_config_path}, using ENV defaults (https://github.com/octokit/octokit.rb/blob/master/lib/octokit/default.rb)"
+          {}
         end
     end
   end
