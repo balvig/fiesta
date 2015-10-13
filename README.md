@@ -1,10 +1,14 @@
-# Capistrano::Fiesta
+# capistrano-fiesta
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/capistrano/fiesta`. To experiment with that code, run `bin/console` for an interactive prompt.
+capistrano-fiesta integrates capistrano with GitHub pull requests and makes
+creating release reports to share with the rest of the team a breeze.
 
-TODO: Delete this and the text above, and describe your gem
+When deploying capistrano-fiesta will compile an editable list of merged pull
+request titles since the last deploy, and also pull out any images
+from the descriptions so they can be attached as screenshots.
 
-## Installation
+
+## Usage
 
 Add this line to your application's Gemfile:
 
@@ -12,17 +16,11 @@ Add this line to your application's Gemfile:
 gem 'capistrano-fiesta'
 ```
 
-And then execute:
+Require in the capfile or appropriate stage:
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install capistrano-fiesta
-
-## Usage
-
-TODO: Write usage instructions here
+```ruby
+require 'capybara-fiesta
+```
 
 ## Development
 
@@ -32,7 +30,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/capistrano-fiesta.
+Bug reports and pull requests are welcome on GitHub at https://github.com/balvig/capistrano-fiesta.
 
 
 ## License
