@@ -11,11 +11,14 @@ module Capistrano
         @github_url, @last_release = github_url, last_release
       end
 
-      def run
-        file = Tempfile.new(['fiesta', '.md'])
-        file << output
-        file.close
-        system(ENV["EDITOR"] || "vi", file.path)
+      def save
+        if stories.any?
+          file = Tempfile.new(['fiesta', '.md'])
+          file << output
+          file.close
+          system(ENV["EDITOR"] || "vi", file.path)
+        end
+        "New stories released: #{stories.size}"
       end
 
       def stories
