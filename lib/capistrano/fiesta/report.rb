@@ -17,7 +17,6 @@ module Capistrano
       def save
         if stories.any?
           open_in_editor
-          log "New stories released: #{stories.size}"
         else
           log "No new stories."
         end
