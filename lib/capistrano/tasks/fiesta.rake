@@ -14,7 +14,9 @@ namespace :fiesta do
   end
 
   task :generate do
-    info Capistrano::Fiesta::Report.new(repo_url, last_release: fetch(:last_release)).save
+    run_locally do
+      info Capistrano::Fiesta::Report.new(repo_url, last_release: fetch(:last_release)).save
+    end
   end
 end
 
