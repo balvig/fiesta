@@ -14,29 +14,31 @@ module Capistrano
         @logs = []
       end
 
-      def save
-        if stories.any?
-          open_in_editor
-        else
-          log "No new stories."
-        end
+      def write
+        open_in_editor if stories.any?
       end
 
       def stories
         @stories ||= merged_pull_requests.map { |pr| Story.new(pr) }
       end
 
-      def output
-        ERB.new(File.read(template), nil, '-').result(binding)
-      end
-
       private
 
         def open_in_editor
-          file = Tempfile.new(['fiesta', '.md'])
-          file << output
+          file << draft
           file.close
-          system(ENV["EDITOR"] || "vi", file.path)
+          Kernel.system(ENV["EDITOR"] || "vi", file.path)
+          file.open
+          file.unlink
+          file.read.force_encoding("utf-8")
+        end
+
+        def file
+          @file ||= Tempfile.new(['fiesta', '.md'])
+        end
+
+        def draft
+          ERB.new(File.read(template), nil, '-').result(binding)
         end
 
         def template
@@ -45,9 +47,9 @@ module Capistrano
 
         def merged_pull_requests
           github.search_issues("base:master repo:#{repo} merged:>#{last_released_at}").items
-          rescue Octokit::UnprocessableEntity => e
-            log "Unable to access GitHub. Message given was: #{e.message}"
-            []
+        rescue Octokit::UnprocessableEntity => e
+          log "Unable to access GitHub. Message given was: #{e.message}"
+          []
         end
 
         def repo

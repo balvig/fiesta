@@ -1,8 +1,6 @@
-*New Release*
-
 <% stories.sort_by(&:title).each do |story| -%>
-:small_orange_diamond: <%= story.title %>
+• <%= story.title %>
 <% story.images.each do |image| -%>
-    - <%= image %>
+  <<%= image %>|Screenshot>
 <% end -%>
 <% end -%>
