@@ -6,6 +6,12 @@ sharing release reports with the rest of the team a breeze.
 When deploying, capistrano-fiesta will compile an editable list of merged pull
 request titles since the last release, pulling out any images from the descriptions so they can be attached as screenshots:
 
+![editor](https://cloud.githubusercontent.com/assets/104138/10676263/57b6bb44-7905-11e5-8df3-38e96a2a0685.png)
+
+The edited content will be posted to Slack:
+
+![slack](https://cloud.githubusercontent.com/assets/104138/10676270/63f627b4-7905-11e5-88e7-b60c08aada99.png)
+
 
 ## Installing
 
@@ -15,12 +21,13 @@ request titles since the last release, pulling out any images from the descripti
   ```ruby
   gem 'capistrano-fiesta'
   ```
-3. Finally require in the capfile or appropriate stage and configure the slack channel
+3. Require in the capfile or appropriate stage and configure the Slack channel:
 
   ```ruby
   require 'capybara-fiesta'
   set :fiesta_slack_channel, '#release'
   ```
+4. If you're using [hub](https://github.com/github/hub) your GitHub credentials should already be configured. Otherwise you can use the [ENV vars in Octokit](https://github.com/octokit/octokit.rb/blob/a98979107a4bf9741a05a1f751405f8a29f29b38/lib/octokit/default.rb#L42-L156) to configure GitHub access.
 
 ## Development
 
