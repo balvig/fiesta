@@ -29,13 +29,10 @@ The edited content will be posted to Slack:
   ```
 4. If you're using [hub](https://github.com/github/hub) your GitHub credentials should already be configured. Otherwise you can use the [ENV vars in Octokit](https://github.com/octokit/octokit.rb/blob/a98979107a4bf9741a05a1f751405f8a29f29b38/lib/octokit/default.rb#L42-L156) to configure GitHub access.
 
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/balvig/capistrano-fiesta.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests.
 
 
 ## License
