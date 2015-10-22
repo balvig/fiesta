@@ -3,8 +3,8 @@
 capistrano-fiesta integrates capistrano with GitHub pull requests and Slack, making
 sharing release reports with the rest of the team a breeze.
 
-When deploying, capistrano-fiesta will compile an editable list of merged pull
-request titles since the last release, pulling out any images from the descriptions so they can be attached as screenshots:
+When deploying, capistrano-fiesta will compile an editable list of pull
+requests merged to master since the last release, pulling out any images from the descriptions so they can be attached as screenshots:
 
 <img src="https://cloud.githubusercontent.com/assets/104138/10676263/57b6bb44-7905-11e5-8df3-38e96a2a0685.png" width="60%" />
 
