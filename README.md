@@ -27,7 +27,7 @@ The edited content will be posted to Slack:
   require 'capybara-fiesta'
   set :fiesta_slack_channel, '#release'
   ```
-4. If you're using [hub](https://github.com/github/hub) your GitHub credentials should already be configured. Otherwise you can use the [ENV vars in Octokit](https://github.com/octokit/octokit.rb/blob/a98979107a4bf9741a05a1f751405f8a29f29b38/lib/octokit/default.rb#L42-L156) to configure GitHub access.
+4. If you're using [hub](https://github.com/github/hub) or [pt-flow](https://github.com/balvig/pt-flow), your GitHub credentials should already be configured. Otherwise you can use the [ENV vars in Octokit](https://github.com/octokit/octokit.rb/blob/a98979107a4bf9741a05a1f751405f8a29f29b38/lib/octokit/default.rb#L42-L156) to configure GitHub access.
 
 ## Contributing
 
