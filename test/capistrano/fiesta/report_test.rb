@@ -16,6 +16,13 @@ module Capistrano::Fiesta
       end
     end
 
+    def test_no_new_stories
+      response = { items: [] }
+      github = stub_request(:get, /github.com/).to_return_json(response)
+      assert true, report.write.nil?
+      assert_requested github
+    end
+
     private
 
       def report

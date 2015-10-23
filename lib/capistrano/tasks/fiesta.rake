@@ -20,7 +20,7 @@ namespace :fiesta do
       report = Capistrano::Fiesta::Report.new(repo_url, last_release: fetch(:last_release))
       result = report.write
 
-      if !result.empty?
+      if result && !result.empty?
         Slackistrano.post(
           team: fetch(:slack_team),
           token: fetch(:slack_token),
