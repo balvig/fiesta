@@ -23,6 +23,27 @@ module Capistrano::Fiesta
       assert_requested github
     end
 
+    def test_write_with_comment
+      report = Report.new('git@github.com:balvig/capistrano-fiesta.git', comment: "Only include new features")
+      response = { items: [{ title: "New login", body: "" }] }
+      stub_request(:get, /github.com/).to_return_json(response)
+
+      draft = <<-DRAFT
+# Only include new features
+
+• New login
+      DRAFT
+      output = <<-OUTPUT
+• New login
+      OUTPUT
+
+      assert_equal draft, report.send(:draft)
+
+      Kernel.stub :system, true do
+        assert_equal output, report.write
+      end
+    end
+
     private
 
       def report

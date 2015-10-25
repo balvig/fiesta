@@ -1,21 +1,23 @@
+Encoding.default_internal = Encoding.default_external = 'utf-8'
+
 require "capistrano/fiesta/story"
+require "capistrano/fiesta/editor"
 require "erb"
-require "tempfile"
 require "octokit"
 require "yaml"
 
 module Capistrano
   module Fiesta
     class Report
-      attr_accessor :logs
+      attr_accessor :logs, :comment
 
-      def initialize(github_url, last_release: Time.now)
-        @github_url, @last_release = github_url, last_release
+      def initialize(github_url, last_release: nil, comment: nil)
+        @github_url, @last_release, @comment = github_url, last_release, comment
         @logs = []
       end
 
       def write
-        open_in_editor if stories.any?
+        editor.open if stories.any?
       end
 
       def stories
@@ -24,17 +26,8 @@ module Capistrano
 
       private
 
-        def open_in_editor
-          file << draft
-          file.close
-          Kernel.system(ENV["EDITOR"] || "vi", file.path)
-          file.open
-          file.unlink
-          file.read.force_encoding("utf-8")
-        end
-
-        def file
-          @file ||= Tempfile.new(['fiesta', '.md'])
+        def editor
+          Editor.new(draft)
         end
 
         def draft
@@ -57,7 +50,7 @@ module Capistrano
         end
 
         def last_released_at
-          Time.parse(@last_release + 'Z00:00').iso8601
+          Time.parse(@last_release + 'Z00:00').iso8601 if @last_release
         end
 
         def github

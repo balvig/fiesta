@@ -17,7 +17,7 @@ namespace :fiesta do
   task :generate do
     run_locally do
       next warn 'Install Slackistrano to post Fiesta reports to Slack' unless defined?(Slackistrano)
-      report = Capistrano::Fiesta::Report.new(repo_url, last_release: fetch(:last_release))
+      report = Capistrano::Fiesta::Report.new(repo_url, last_release: fetch(:last_release), comment: fetch(:fiesta_comment))
       result = report.write
 
       if result && !result.empty?
