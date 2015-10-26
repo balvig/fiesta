@@ -1,3 +1,7 @@
+<% if comment -%>
+# <%= comment %>
+
+<% end -%>
 <% stories.sort_by(&:title).each do |story| -%>
 • <%= story.title %>
 <% story.images.each do |image| -%>
