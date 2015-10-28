@@ -8,8 +8,8 @@ namespace :fiesta do
 
   task :set_last_release do
     on roles(:web).first do
-      releases = capture("ls #{releases_path}")
-      last_release = releases.split("\n").sort.last
+      last_release_path = capture("readlink #{current_path}")
+      last_release = last_release_path.split('/').last
       set(:last_release, last_release)
     end
   end
