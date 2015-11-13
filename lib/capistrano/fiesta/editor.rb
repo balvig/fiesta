@@ -7,9 +7,9 @@ module Capistrano
         @content = content
       end
 
-      def open
+      def edit
         create_temp_file
-        edit
+        open
         read
       end
 
@@ -20,8 +20,8 @@ module Capistrano
           file.close
         end
 
-        def edit
-          Kernel.system(ENV["EDITOR"] || "vi", file.path)
+        def open
+          system(ENV["EDITOR"] || "vi", file.path)
         end
 
         def read

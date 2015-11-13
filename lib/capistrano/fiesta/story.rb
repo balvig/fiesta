@@ -12,6 +12,14 @@ module Capistrano
       def images
         @pr.body.scan(/https?:\/\/\S*\.(?:png|jpg|gif)/i)
       end
+
+      def url
+        @pr.html_url
+      end
+
+      def to_markdown
+        "- [#{title}](#{url})"
+      end
     end
   end
 end
