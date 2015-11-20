@@ -13,32 +13,20 @@ module Capistrano
         attr_accessor :chat_client
       end
 
-      attr_reader :announcement
-
-      def self.create(*args)
-        report = new(*args)
-        report.save
-        report
-      end
+      attr_reader :stories
 
       def initialize(github_url, last_release: nil, comment: nil)
         @github_url, @last_release, @comment = github_url, last_release, comment
-      end
-
-      def save
-        @announcement = editor.edit if stories.any?
-      end
-
-      def stories
-        @stories ||= merged_pull_requests.map { |pr| Story.new(pr) }
+        @stories = merged_pull_requests.map { |pr| Story.new(pr) }
       end
 
       def announce(channel: 'releases', **options)
-        return Logger.warn 'Announcement blank, nothing posted to Slack' unless announcement?
-        options[:payload] = { channel: channel, username: 'New Releases', icon_emoji: ':tada:', text: announcement }
-        chat.post(options)
-      rescue NameError
-        Logger.warn "Install Slackistrano to announce releases on Slack"
+        text = editor.compose if stories.any?
+        return Logger.warn('Announcement blank, nothing posted to Slack') if text.nil? || text.empty?
+        chat.post options.merge(payload: { channel: channel, username: 'New Releases', icon_emoji: ':tada:', text: text })
+        text
+      rescue NameError => e
+        Logger.warn "Install Slackistrano to announce releases on Slack (#{e.message})"
       end
 
       def create_release(name = nil)
@@ -55,10 +43,6 @@ module Capistrano
 
         def draft
           Draft.new(comment: @comment, stories: stories)
-        end
-
-        def announcement?
-          announcement && !announcement.empty?
         end
 
         def merged_pull_requests

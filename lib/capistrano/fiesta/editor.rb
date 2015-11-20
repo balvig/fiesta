@@ -7,7 +7,7 @@ module Capistrano
         @content = content
       end
 
-      def edit
+      def compose
         create_temp_file
         open
         read
