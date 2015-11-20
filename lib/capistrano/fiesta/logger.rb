@@ -5,6 +5,7 @@ module Capistrano
 
       def self.warn(message)
         @logs << "[FIESTA] #{message}"
+        nil
       end
 
       def self.logs

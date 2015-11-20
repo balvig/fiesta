@@ -1,25 +1,36 @@
 namespace :fiesta do
-  desc 'Generate a release report and post it on Slack'
-  task :report do
-    invoke 'fiesta:set_last_release'
+  desc 'Run a fiesta report'
+  task :run do
     invoke 'fiesta:generate'
-  end
-
-  task :set_last_release do
-    on roles(:web).first do
-      last_release_path = capture("readlink #{current_path}")
-      last_release = last_release_path.split('/').last
-      set(:last_release, last_release)
-    end
+    invoke 'fiesta:announce'
   end
 
   task :generate do
     run_locally do
-      report = Capistrano::Fiesta::Report.create(repo_url, last_release: fetch(:last_release), comment: fetch(:fiesta_comment))
+      set :fiesta_report, Capistrano::Fiesta::Report.new(repo_url, last_release: last_release, comment: fetch(:fiesta_comment))
+      info "Deploying #{report.stories.size} new story(ies)"
+    end
+  end
+
+  task :announce do
+    run_locally do
       report.announce(slack)
-      report.create_release(fetch(:release_name)) if fetch(:branch) == 'master'
+      report.create_release fetch(:release_timestamp) if fetch(:branch) == 'master'
       Capistrano::Fiesta::Logger.logs.each { |log| warn log }
     end
+  end
+
+  def report
+    fetch(:fiesta_report)
+  end
+
+  def last_release
+    last_release = nil
+    on roles(:web).first do
+      last_release_path = capture("readlink #{current_path}")
+      last_release = last_release_path.split('/').last
+    end
+    last_release
   end
 
   def slack
@@ -33,5 +44,5 @@ namespace :fiesta do
   end
 end
 
-before 'deploy:starting', 'fiesta:set_last_release'
-after 'deploy:finished', 'fiesta:generate'
+before 'deploy:starting', 'fiesta:generate'
+after 'deploy:finished', 'fiesta:announce'
