@@ -14,7 +14,7 @@ namespace :fiesta do
 
   task :announce do
     run_locally do
-      report.announce(slack)
+      report.announce(slack_params)
       report.create_release fetch(:release_timestamp) if fetch(:branch) == 'master'
       Capistrano::Fiesta::Logger.logs.each { |log| warn log }
     end
@@ -33,13 +33,17 @@ namespace :fiesta do
     last_release
   end
 
-  def slack
+  def slack_params
     {
       team: fetch(:slack_team),
       token: fetch(:slack_token),
       webhook: fetch(:slack_webhook),
       via_slackbot: fetch(:slack_via_slackbot),
-      channel: fetch(:fiesta_slack_channel)
+      payload: {
+        channel: fetch(:fiesta_slack_channel) || 'releases',
+        username: fetch(:fiesta_slack_username) || 'New Releases',
+        icon_emoji: ':tada:'
+      }
     }
   end
 end

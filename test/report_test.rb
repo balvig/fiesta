@@ -70,15 +70,12 @@ module Capistrano::Fiesta
     end
 
     def test_announce_with_options
-      Report.new(repo).announce(team: 'bobcats', token: '1234', channel: 'releases')
+      Report.new(repo).announce(team: 'bobcats', token: '1234')
 
       post = {
         team: 'bobcats',
         token: '1234',
         payload: {
-          channel: 'releases',
-          username: 'New Releases',
-          icon_emoji: ':tada:',
           text: "• New login\n"
         }
       }
