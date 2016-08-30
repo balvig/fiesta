@@ -20,10 +20,11 @@ module Capistrano
         @stories = merged_pull_requests.map { |pr| Story.new(pr) }
       end
 
-      def announce(channel: 'releases', **options)
+      def announce(options = {})
         text = editor.compose if stories.any?
         return Logger.warn('Announcement blank, nothing posted to Slack') if text.nil? || text.empty?
-        chat.post options.merge(payload: { channel: channel, username: 'New Releases', icon_emoji: ':tada:', text: text })
+        options[:payload] = options.fetch(:payload, {}).merge(text: text)
+        chat.post(options)
         text
       rescue NameError => e
         Logger.warn "Install Slackistrano to announce releases on Slack (#{e.message})"
