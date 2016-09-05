@@ -1,10 +1,11 @@
 namespace :fiesta do
-  desc 'Run a fiesta report'
+  desc 'Run a fiesta report and announce it'
   task :run do
     invoke 'fiesta:generate'
     invoke 'fiesta:announce'
   end
 
+  desc 'Generate a fiesta report'
   task :generate do
     run_locally do
       set :fiesta_report, Capistrano::Fiesta::Report.new(repo_url, last_release: last_release, comment: fetch(:fiesta_comment))
@@ -12,6 +13,7 @@ namespace :fiesta do
     end
   end
 
+  desc 'Announce a fiesta report'
   task :announce do
     run_locally do
       report.announce(slack_params)
