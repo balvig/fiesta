@@ -9,20 +9,9 @@ module Capistrano::Fiesta
     end
   end
 
-  class SlackDummy
-    def self.post(params = {})
-      @test_log = params
-    end
-
-    def self.test_log
-      @test_log
-    end
-  end
-
   class ReportTest < Minitest::Test
     def setup
       stub_request(:get, /github.com\/search/).to_return_json(items: [{ title: "New login", body: "", html_url: 'www.github.com' }])
-      Report.chat_client = SlackDummy
     end
 
     def test_announce
@@ -80,11 +69,10 @@ module Capistrano::Fiesta
         }
       }
 
-      assert_equal post, SlackDummy.test_log
+      assert_equal post, SlackDummy.log
     end
 
     def test_announce_without_chat_client
-      Report.chat_client = nil
       Report.new(repo).announce
       assert Logger.logs.last.include?("[FIESTA] Install Slackistrano to announce releases on Slack")
     end

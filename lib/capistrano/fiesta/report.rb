@@ -4,15 +4,12 @@ require "capistrano/fiesta/github"
 require "capistrano/fiesta/draft"
 require "capistrano/fiesta/editor"
 require "capistrano/fiesta/logger"
+require "capistrano/fiesta/slack_dummy"
 require "capistrano/fiesta/story"
 
 module Capistrano
   module Fiesta
     class Report
-      class << self
-        attr_accessor :chat_client
-      end
-
       attr_reader :stories
 
       def initialize(github_url, last_release: nil, comment: nil)
@@ -26,8 +23,6 @@ module Capistrano
         options[:payload] = options.fetch(:payload, {}).merge(text: text)
         chat.post(options)
         text
-      rescue NameError => e
-        Logger.warn "Install Slackistrano to announce releases on Slack (#{e.message})"
       end
 
       def create_release(name = nil)
@@ -66,7 +61,9 @@ module Capistrano
         end
 
         def chat
-          self.class.chat_client || Slackistrano
+          Slackistrano
+        rescue NameError
+          SlackDummy.new
         end
     end
   end
