@@ -11,5 +11,10 @@ module Capistrano::Fiesta
       pr = OpenStruct.new(body: "one pic http://github.com/avatar.jpg and another http://google.com/fish.png")
       assert_equal %w{http://github.com/avatar.jpg http://google.com/fish.png}, Story.new(pr).images
     end
+
+    def test_images_with_nil_body
+      pr = OpenStruct.new(body: nil)
+      assert_equal [], Story.new(pr).images
+    end
   end
 end
