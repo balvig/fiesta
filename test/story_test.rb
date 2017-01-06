@@ -7,6 +7,11 @@ module Capistrano::Fiesta
       assert_equal "New [Cool Stuff] feature", Story.new(pr).title
     end
 
+    def test_title_with_trello_id
+      pr = OpenStruct.new(title: "New [Cool Stuff] feature [Delivers #[586f50b384a655b5c009c4ca]")
+      assert_equal "New [Cool Stuff] feature", Story.new(pr).title
+    end
+
     def test_images
       pr = OpenStruct.new(body: "one pic http://github.com/avatar.jpg and another http://google.com/fish.png")
       assert_equal %w{http://github.com/avatar.jpg http://google.com/fish.png}, Story.new(pr).images

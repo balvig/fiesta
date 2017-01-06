@@ -6,7 +6,7 @@ module Capistrano
       end
 
       def title
-        @pr.title.sub(/\[Delivers #\d+\]\z/, '').strip
+        @pr.title.sub(/\[Delivers #\S+\]\z/, '').strip
       end
 
       def images
