@@ -5,8 +5,8 @@ module Capistrano
         @pr = pr
       end
 
-      def title
-        @pr.title.sub(/\[Delivers #\S+\]\z/, '').strip
+      def release_note
+        (release_note_in_body || title).strip
       end
 
       def images
@@ -20,6 +20,16 @@ module Capistrano
       def to_markdown
         "- [#{title}](#{url})"
       end
+
+      private
+
+        def title
+          @pr.title.to_s.sub(/\[Delivers #\S+\]\z/, '')
+        end
+
+        def release_note_in_body
+          @pr.body.to_s[/_Release\snote\:(.+)_/m, 1]
+        end
     end
   end
 end
