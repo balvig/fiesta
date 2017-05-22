@@ -21,7 +21,11 @@ module Capistrano
         end
 
         def open
-          system(*(ENV["EDITOR"] || "vi").split, file.path)
+          system(*editor_command.split, file.path)
+        end
+
+        def editor_command
+          ENV["EDITOR"] || "vi"
         end
 
         def read
