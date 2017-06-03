@@ -1,11 +1,11 @@
+require "attr_extras/explicit"
 require "tempfile"
 
 module Capistrano
   module Fiesta
     class Editor
-      def initialize(content)
-        @content = content
-      end
+      extend AttrExtras.mixin
+      pattr_initialize :content, [:comment]
 
       def compose
         create_temp_file
@@ -16,7 +16,8 @@ module Capistrano
       private
 
         def create_temp_file
-          file << @content
+          file << content
+          file << "# #{comment}\n\n" if comment
           file.close
         end
 
@@ -37,7 +38,7 @@ module Capistrano
         end
 
         def file
-          @file ||= Tempfile.new(['fiesta', '.md'])
+          @_file ||= Tempfile.new(["fiesta", ".md"])
         end
     end
   end
