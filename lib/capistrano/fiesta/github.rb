@@ -4,6 +4,11 @@ require "yaml"
 module Capistrano
   module Fiesta
     class Github
+
+      def self.client
+        new.client
+      end
+
       def client
         Octokit::Client.new(config)
       end
