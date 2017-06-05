@@ -1,8 +1,10 @@
 namespace :fiesta do
   desc "Generate a fiesta report and announce it"
   task :run do
-    invoke "fiesta:generate"
-    invoke "fiesta:announce"
+    if master_branch?
+      invoke "fiesta:generate"
+      invoke "fiesta:announce"
+    end
   end
 
   desc "Generate a fiesta report"
@@ -15,10 +17,8 @@ namespace :fiesta do
   desc "Announce a fiesta report"
   task :announce do
     run_locally do
-      if master_branch?
-        report.announce(slack_params)
-        report.create_release(timestamp)
-      end
+      report.announce(slack_params)
+      report.create_release(timestamp)
       Capistrano::Fiesta::Logger.logs.each { |log| warn log }
     end
   end

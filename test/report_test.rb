@@ -26,19 +26,12 @@ module Capistrano::Fiesta
     end
 
     def test_announce_with_comment
-      draft = <<-DRAFT
-# Only include new features
-
-• New login
-      DRAFT
-
       expected = <<-ANNOUNCEMENT
 • New login
       ANNOUNCEMENT
 
-      report = Report.new(repo, comment: "Only include new features")
+      report = Report.new(repo, comment: "Only include new features") # Not sure how to test the contents of the editor
       announcement = report.announce
-      assert_equal draft, report.send(:draft) # find a way to set expectation on what Editor receives
       assert_equal expected, announcement
     end
 

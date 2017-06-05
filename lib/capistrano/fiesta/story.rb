@@ -4,7 +4,6 @@ module Capistrano
   module Fiesta
     class Story
       extend AttrExtras.mixin
-
       pattr_initialize :pr
 
       def release_note

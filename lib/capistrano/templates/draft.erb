@@ -1,7 +1,3 @@
-<% if comment -%>
-# <%= comment %>
-
-<% end -%>
 <% stories.each do |story| -%>
 • <%= story.release_note %>
 <% story.images.each do |image| -%>

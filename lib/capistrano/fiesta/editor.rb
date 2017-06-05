@@ -5,7 +5,7 @@ module Capistrano
   module Fiesta
     class Editor
       extend AttrExtras.mixin
-      pattr_initialize :content
+      pattr_initialize :content, [:comment]
 
       def compose
         create_temp_file
@@ -17,6 +17,7 @@ module Capistrano
 
         def create_temp_file
           file << content
+          file << "# #{comment}\n\n" if comment
           file.close
         end
 

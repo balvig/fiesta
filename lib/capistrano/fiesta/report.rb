@@ -3,7 +3,7 @@ Encoding.default_internal = Encoding.default_external = "utf-8"
 require "attr_extras/explicit"
 require "capistrano/fiesta/announcement"
 require "capistrano/fiesta/github"
-require "capistrano/fiesta/draft"
+require "capistrano/fiesta/template"
 require "capistrano/fiesta/editor"
 require "capistrano/fiesta/logger"
 require "capistrano/fiesta/story"
@@ -23,15 +23,15 @@ module Capistrano
       end
 
       def create_release(name = nil)
-        return Logger.warn "No new stories, skipping GitHub release" if nothing_to_announce?
+        return Logger.warn "No new stories, skipping GitHub release" if stories.none?
         Release.new(repo: repo, name: name, stories: stories).post
       end
 
-      private
+      def stories
+        @_stories ||= fetch_stories
+      end
 
-        def stories
-          @_stories ||= fetch_stories
-        end
+      private
 
         def fetch_stories
           if auto_compose?
@@ -46,15 +46,23 @@ module Capistrano
         end
 
         def text
-          @_text ||= editor.compose
+          @_text ||= render_text
+        end
+
+        def render_text
+          if auto_compose?
+            template
+          else
+            editor.compose
+          end
         end
 
         def editor
-          Editor.new(draft)
+          Editor.new(template, comment: comment)
         end
 
-        def draft
-          Draft.new(comment: comment, stories: stories_with_release_notes).render
+        def template
+          Template.new(stories_with_release_notes).render
         end
 
         def stories_with_release_notes
