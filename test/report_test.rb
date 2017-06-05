@@ -1,8 +1,6 @@
-require 'test_helper'
-
+require "test_helper"
 
 module Capistrano::Fiesta
-  # Mocks
   class Editor
     def system(*args)
       true
@@ -11,7 +9,7 @@ module Capistrano::Fiesta
 
   class ReportTest < Minitest::Test
     def setup
-      stub_request(:get, /github.com\/search/).to_return_json(items: [{ title: "New login", body: "", html_url: 'www.github.com' }])
+      stub_request(:get, /github.com\/search/).to_return_json(items: [{ title: "New login", body: "", html_url: "www.github.com" }])
     end
 
     def test_announce
@@ -22,7 +20,7 @@ module Capistrano::Fiesta
       expected = <<-ANNOUNCEMENT
 • New login
       ANNOUNCEMENT
-      announcement = Report.new(repo, last_release: '20151009145023').announce
+      announcement = Report.new(repo, last_release: "20151009145023").announce
       assert_equal expected, announcement
       assert_requested github
     end
@@ -40,7 +38,7 @@ module Capistrano::Fiesta
 
       report = Report.new(repo, comment: "Only include new features")
       announcement = report.announce
-      assert_equal draft, report.send(:draft).render # find a way to set expectation on what Editor receives
+      assert_equal draft, report.send(:draft) # find a way to set expectation on what Editor receives
       assert_equal expected, announcement
     end
 
@@ -83,10 +81,27 @@ module Capistrano::Fiesta
       assert_equal "[FIESTA] Announcement blank, nothing posted to Slack", Logger.logs.last
     end
 
+    def test_announce_with_auto_compose_mode
+      response = {
+        items: [
+          { title: "No release note in body", body: "No notes" },
+          { title: "Release note in body", body: "_Release note: New feature_" }
+        ]
+      }
+
+      stub_request(:get, /search/).to_return_json(response)
+
+      expected = <<-ANNOUNCEMENT
+• New feature
+      ANNOUNCEMENT
+      announcement = Report.new(repo, last_release: "20151009145023", auto_compose: true).announce
+      assert_equal expected, announcement
+    end
+
     private
 
       def repo
-        'git@github.com:balvig/capistrano-fiesta.git'
+        "git@github.com:balvig/capistrano-fiesta.git"
       end
   end
 end
