@@ -10,7 +10,7 @@ namespace :fiesta do
   desc "Generate a fiesta report"
   task :generate do
     run_locally do
-      info "Deploying #{report.stories.size} new story(ies)"
+      set :fiesta_report, build_report
     end
   end
 
@@ -23,8 +23,12 @@ namespace :fiesta do
     end
   end
 
+  def build_report
+    Capistrano::Fiesta::Report.new(repo_url, report_options)
+  end
+
   def report
-    @_report ||= Capistrano::Fiesta::Report.new(repo_url, report_options)
+    fetch(:fiesta_report)
   end
 
   def report_options
