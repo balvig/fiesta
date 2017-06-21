@@ -17,6 +17,11 @@ module Capistrano::Fiesta
       assert_equal "This thing is amazing", Story.new(pr).release_note
     end
 
+    def test_release_note_in_body_with_additional_underscores
+      pr = OpenStruct.new(body: "_Release note: This thing is amazing_ <img src='https://example.com/image.jpg#release_notes'>")
+      assert_equal "This thing is amazing", Story.new(pr).release_note
+    end
+
     def test_images
       pr = OpenStruct.new(body: "one pic http://github.com/avatar.jpg and another http://google.com/fish.png")
       assert_equal %w{http://github.com/avatar.jpg http://google.com/fish.png}, Story.new(pr).images
