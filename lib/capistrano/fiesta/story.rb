@@ -29,7 +29,7 @@ module Capistrano
         end
 
         def release_note_in_body
-          @_release_note_in_body ||= pr.body.to_s[/_Release\snote\:?\s(.+)_/m, 1]
+          @_release_note_in_body ||= pr.body.to_s[/_Release\snote\:?\s(.+?)_/m, 1]
         end
     end
   end
