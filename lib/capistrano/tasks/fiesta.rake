@@ -7,16 +7,10 @@ namespace :fiesta do
     end
   end
 
-  desc "Generate a fiesta report"
-  task :generate do
-    run_locally do
-      set :fiesta_report, build_report
-    end
-  end
-
   desc "Announce a fiesta report"
   task :announce do
     run_locally do
+      report = build_report
       report.announce(slack_params)
       report.create_release(timestamp)
       Capistrano::Fiesta::Logger.logs.each { |log| warn log }
@@ -27,25 +21,13 @@ namespace :fiesta do
     Capistrano::Fiesta::Report.new(repo_url, report_options)
   end
 
-  def report
-    fetch(:fiesta_report)
-  end
-
   def report_options
     {
-      last_release: last_release,
+      current_revision: fetch(:current_revision),
+      previous_revision: fetch(:previous_revision),
       comment: fetch(:fiesta_comment),
       auto_compose: fetch(:fiesta_auto_compose)
     }
-  end
-
-  def last_release
-    last_release = nil
-    on roles(:web).first do
-      last_release_path = capture("readlink #{current_path}")
-      last_release = last_release_path.split("/").last
-    end
-    last_release
   end
 
   def master_branch?
@@ -71,5 +53,4 @@ namespace :fiesta do
   end
 end
 
-before "deploy:starting", "fiesta:generate"
 after "deploy:finished", "fiesta:announce"

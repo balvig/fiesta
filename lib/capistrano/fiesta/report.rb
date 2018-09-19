@@ -14,7 +14,7 @@ module Capistrano
   module Fiesta
     class Report
       extend AttrExtras.mixin
-      pattr_initialize :github_url, [:last_release, :comment, :auto_compose]
+      pattr_initialize :github_url, [:current_revision, :previous_revision, :comment, :auto_compose]
       attr_query :auto_compose?
 
       def announce(config = {})
@@ -70,20 +70,33 @@ module Capistrano
         end
 
         def merged_pull_requests
-          github.search_issues("base:master repo:#{repo} merged:>#{last_released_at}").items
-        rescue Octokit::UnprocessableEntity => e
-          Logger.warn "Unable to access GitHub. Message given was: #{e.message}"
+          merged_pull_request_numbers.map do |number|
+            begin
+              github.pull_request(repo, number)
+            rescue Octokit::NotFound
+              nil
+            end
+          end.compact
+        end
+
+        def merged_pull_request_numbers
+          commits.map do |commit|
+            commit.commit.message.slice(/\AMerge pull request #(\d+) /, 1)
+          end.compact
+        end
+
+        def commits
+          if previous_revision && current_revision
+            github.compare(repo, previous_revision, current_revision).commits.reverse
+          else
+            []
+          end
+        rescue Octokit::NotFound
           []
         end
 
         def repo
           github_url.match(/github.com[:\/](\S+\/\S+)\.git/)[1]
-        end
-
-        def last_released_at
-          if last_release
-            Time.parse(last_release + "Z00:00").iso8601
-          end
         end
 
         def github
