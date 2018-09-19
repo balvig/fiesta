@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Capistrano::Fiesta
+module Fiesta
   class TimestampNormalizerTest < Minitest::Test
     def test_normalizing_timestamps
       time = Time.parse("2015-10-09T14:50:23Z")

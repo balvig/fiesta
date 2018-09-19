@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Capistrano::Fiesta
+module Fiesta
   class SlackTest < Minitest::Test
     def test_post
       webhook = "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"

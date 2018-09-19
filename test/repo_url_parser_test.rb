@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Capistrano::Fiesta
+module Fiesta
   class RepoUrlParserTest < Minitest::Test
     def test_ssh_url
       parser = RepoUrlParser.new("git@github.com:balvig/capistrano-fiesta.git")

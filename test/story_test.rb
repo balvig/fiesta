@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Capistrano::Fiesta
+module Fiesta
   class StoryTest < Minitest::Test
     def test_title_as_release_note
       pr = OpenStruct.new(title: "New [Cool Stuff] feature [Delivers #2123123]")

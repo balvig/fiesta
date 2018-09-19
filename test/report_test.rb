@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Capistrano::Fiesta
+module Fiesta
   class Editor
     def system(*args)
       true

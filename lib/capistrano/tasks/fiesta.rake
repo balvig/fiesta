@@ -18,16 +18,16 @@ namespace :fiesta do
   task :announce do
     run_locally do
       report.announce(slack_params)
-      Capistrano::Fiesta::Logger.logs.each { |log| warn log }
+      Fiesta::Logger.logs.each { |log| warn log }
     end
   end
 
   def build_report
-    Capistrano::Fiesta::Report.new(repo, report_options)
+    Fiesta::Report.new(repo, report_options)
   end
 
   def repo
-    Capistrano::Fiesta::RepoUrlParser.new(repo_url).repo
+    Fiesta::RepoUrlParser.new(repo_url).repo
   end
 
   def report
