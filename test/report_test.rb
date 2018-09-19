@@ -94,7 +94,7 @@ module Capistrano::Fiesta
     private
 
       def repo
-        "git@github.com:balvig/capistrano-fiesta.git"
+        "balvig/capistrano-fiesta"
       end
   end
 end
