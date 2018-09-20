@@ -14,7 +14,7 @@ module Fiesta
     end
 
     def test_announce
-      query = "base:master repo:balvig/capistrano-fiesta merged:>2015-10-09T14:50:23Z"
+      query = "base:master repo:balvig/fiesta merged:>2015-10-09T14:50:23Z"
       response = { items: [{ title: "New login [Delivers #123]", body: "" }] }
       github = stub_request(:get, "https://api.github.com:443/search/issues").with(query: { q: query }).to_return_json(response)
 
@@ -37,14 +37,14 @@ module Fiesta
     end
 
     def test_creating_release_on_github
-      release_endpoint = stub_request(:post, "https://api.github.com/repos/balvig/capistrano-fiesta/releases").with(body: { name: "20151009145023", body: "- [New login](www.github.com)", tag_name: "release-20151009145023" })
+      release_endpoint = stub_request(:post, "https://api.github.com/repos/balvig/fiesta/releases").with(body: { name: "20151009145023", body: "- [New login](www.github.com)", tag_name: "release-20151009145023" })
       Report.new(repo).create_release('20151009145023')
       assert_requested release_endpoint
     end
 
     def test_creating_release_with_no_stories
       stub_request(:get, /github.com/).to_return_json(items: [])
-      release_endpoint = stub_request(:post, "https://api.github.com/repos/balvig/capistrano-fiesta/releases")
+      release_endpoint = stub_request(:post, "https://api.github.com/repos/balvig/fiesta/releases")
       Report.new(repo).create_release('20151009145023')
       assert_not_requested release_endpoint
       assert_equal "[FIESTA] No new stories, skipping GitHub release", Logger.logs.last
@@ -82,7 +82,7 @@ module Fiesta
     private
 
       def repo
-        "balvig/capistrano-fiesta"
+        "balvig/fiesta"
       end
 
       def webhook
