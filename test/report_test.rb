@@ -9,20 +9,25 @@ module Capistrano::Fiesta
 
   class ReportTest < Minitest::Test
     def setup
-      stub_request(:get, /github.com\/search/).to_return_json(items: [{ title: "New login", body: "", html_url: "www.github.com" }])
+      compare_response = { commits: [{ commit: { message: "Merge pull request #42 from new-login" }}]}
+      stub_request(:get, "https://api.github.com:443/repos/balvig/capistrano-fiesta/compare/21b8426...b0de556").to_return_json(compare_response)
+      pull_request_response = { title: "New login", html_url: "www.github.com" }
+      stub_request(:get, "https://api.github.com:443/repos/balvig/capistrano-fiesta/pulls/42").to_return_json(pull_request_response)
     end
 
     def test_announce
-      query = "base:master repo:balvig/capistrano-fiesta merged:>2015-10-09T14:50:23Z"
-      response = { items: [{ title: "New login [Delivers #123]", body: "" }] }
-      github = stub_request(:get, "https://api.github.com:443/search/issues").with(query: { q: query }).to_return_json(response)
+      compare_response = { commits: [{ commit: { message: "Merge pull request #42 from new-login" }}]}
+      compare_endpoint = stub_request(:get, "https://api.github.com:443/repos/balvig/capistrano-fiesta/compare/21b8426...b0de556").to_return_json(compare_response)
+      pull_request_response = { title: "New login [Delivers #123]", body: "" }
+      pull_request_endpoint = stub_request(:get, "https://api.github.com:443/repos/balvig/capistrano-fiesta/pulls/42").to_return_json(pull_request_response)
 
       expected = <<-ANNOUNCEMENT
 • New login
       ANNOUNCEMENT
-      announcement = Report.new(repo, last_release: "20151009145023").announce
+      announcement = Report.new(repo, current_revision: "b0de556", previous_revision: "21b8426").announce
       assert_equal expected, announcement
-      assert_requested github
+      assert_requested compare_endpoint
+      assert_requested pull_request_endpoint
     end
 
     def test_announce_with_comment
@@ -30,14 +35,14 @@ module Capistrano::Fiesta
 • New login
       ANNOUNCEMENT
 
-      report = Report.new(repo, comment: "Only include new features") # Not sure how to test the contents of the editor
+      report = Report.new(repo, current_revision: "b0de556", previous_revision: "21b8426", comment: "Only include new features") # Not sure how to test the contents of the editor
       announcement = report.announce
       assert_equal expected, announcement
     end
 
     def test_creating_release_on_github
       release_endpoint = stub_request(:post, "https://api.github.com/repos/balvig/capistrano-fiesta/releases").with(body: { name: "20151009145023", body: "- [New login](www.github.com)", tag_name: "release-20151009145023" })
-      Report.new(repo).create_release('20151009145023')
+      Report.new(repo, current_revision: "b0de556", previous_revision: "21b8426").create_release('20151009145023')
       assert_requested release_endpoint
     end
 
@@ -50,7 +55,7 @@ module Capistrano::Fiesta
     end
 
     def test_announce_with_options
-      Report.new(repo).announce(team: 'bobcats', token: '1234')
+      Report.new(repo, current_revision: "b0de556", previous_revision: "21b8426").announce(team: 'bobcats', token: '1234')
 
       post = {
         team: 'bobcats',
@@ -64,7 +69,7 @@ module Capistrano::Fiesta
     end
 
     def test_announce_without_chat_client
-      Report.new(repo).announce
+      Report.new(repo, current_revision: "b0de556", previous_revision: "21b8426").announce
       assert Logger.logs.last.include?("[FIESTA] Install Slackistrano to announce releases on Slack")
     end
 
@@ -75,19 +80,22 @@ module Capistrano::Fiesta
     end
 
     def test_announce_with_auto_compose_mode
-      response = {
-        items: [
-          { title: "No release note in body", body: "No notes" },
-          { title: "Release note in body", body: "_Release note: New feature_" }
+      compare_response = {
+        commits: [
+          { commit: { message: "Merge pull request #43 from release-note-in-body" }},
+          { commit: { message: "Merge pull request #42 from no-release-note-in-body" }}
         ]
       }
-
-      stub_request(:get, /search/).to_return_json(response)
+      compare_endpoint = stub_request(:get, "https://api.github.com:443/repos/balvig/capistrano-fiesta/compare/21b8426...b0de556").to_return_json(compare_response)
+      pull_request_response = { title: "No release note in body", body: "No notes" }
+      stub_request(:get, "https://api.github.com:443/repos/balvig/capistrano-fiesta/pulls/42").to_return_json(pull_request_response)
+      pull_request_response = { title: "Release note in body", body: "_Release note: New feature_" }
+      stub_request(:get, "https://api.github.com:443/repos/balvig/capistrano-fiesta/pulls/43").to_return_json(pull_request_response)
 
       expected = <<-ANNOUNCEMENT
 • New feature
       ANNOUNCEMENT
-      announcement = Report.new(repo, last_release: "20151009145023", auto_compose: true).announce
+      announcement = Report.new(repo, current_revision: "b0de556", previous_revision: "21b8426", auto_compose: true).announce
       assert_equal expected, announcement
     end
 
