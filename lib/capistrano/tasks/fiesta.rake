@@ -28,7 +28,7 @@ namespace :fiesta do
   end
 
   def repo
-    repo_url.slice(/github.com[:\/](\S+\/\S+)\.git/, 1)
+    RepoUrlParser.new(repo_url).repo
   end
 
   def report
