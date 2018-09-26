@@ -4,9 +4,12 @@ require "yaml"
 module Capistrano
   module Fiesta
     class Github
+      class << self
+        attr_writer :client
 
-      def self.client
-        new.client
+        def client
+          @client ||= new.client
+        end
       end
 
       def client
