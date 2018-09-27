@@ -4,6 +4,9 @@ require "yaml"
 module Capistrano
   module Fiesta
     class Github
+      class << self
+        attr_accessor :config
+      end
 
       def self.client
         new.client
@@ -16,6 +19,10 @@ module Capistrano
       private
 
         def config
+          self.class.config || default_config
+        end
+
+        def default_config
           { access_token: hub_config["oauth_token"] }
         end
 
