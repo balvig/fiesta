@@ -24,7 +24,11 @@ namespace :fiesta do
   end
 
   def build_report
-    Capistrano::Fiesta::Report.new(repo_url, report_options)
+    Capistrano::Fiesta::Report.new(repo, report_options)
+  end
+
+  def repo
+    RepoUrlParser.new(repo_url).repo
   end
 
   def report

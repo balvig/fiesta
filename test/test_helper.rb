@@ -1,3 +1,4 @@
+require 'capistrano/fiesta/repo_url_parser'
 require 'capistrano/fiesta/report'
 require 'minitest/autorun'
 require 'minitest/reporters'

@@ -14,7 +14,7 @@ module Capistrano
   module Fiesta
     class Report
       extend AttrExtras.mixin
-      pattr_initialize :github_url, [:last_release, :comment, :auto_compose]
+      pattr_initialize :repo, [:last_release, :comment, :auto_compose]
       attr_query :auto_compose?
 
       def announce(config = {})
@@ -74,10 +74,6 @@ module Capistrano
         rescue Octokit::UnprocessableEntity => e
           Logger.warn "Unable to access GitHub. Message given was: #{e.message}"
           []
-        end
-
-        def repo
-          github_url.match(/github.com[:\/](\S+\/\S+)\.git/)[1]
         end
 
         def last_released_at
