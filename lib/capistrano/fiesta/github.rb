@@ -5,11 +5,11 @@ module Capistrano
   module Fiesta
     class Github
       class << self
-        attr_writer :client
+        attr_accessor :config
+      end
 
-        def client
-          @client ||= new.client
-        end
+      def self.client
+        new.client
       end
 
       def client
@@ -19,6 +19,10 @@ module Capistrano
       private
 
         def config
+          self.class.config || default_config
+        end
+
+        def default_config
           { access_token: hub_config["oauth_token"] }
         end
 
