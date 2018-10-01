@@ -20,7 +20,7 @@ module Capistrano::Fiesta
       expected = <<-ANNOUNCEMENT
 • New login
       ANNOUNCEMENT
-      announcement = Report.new(repo, last_release: "20151009145023").announce
+      announcement = Report.new(repo, last_released_at: Time.parse("2015-10-09T14:50:23Z")).announce
       assert_equal expected, announcement
       assert_requested github
     end
@@ -87,7 +87,7 @@ module Capistrano::Fiesta
       expected = <<-ANNOUNCEMENT
 • New feature
       ANNOUNCEMENT
-      announcement = Report.new(repo, last_release: "20151009145023", auto_compose: true).announce
+      announcement = Report.new(repo, last_released_at: Time.parse("2015-10-09T14:50:23Z"), auto_compose: true).announce
       assert_equal expected, announcement
     end
 
