@@ -65,7 +65,6 @@ namespace :fiesta do
       team: fetch(:slack_team),
       token: fetch(:slack_token),
       webhook: fetch(:slack_webhook),
-      via_slackbot: fetch(:slack_via_slackbot),
       payload: {
         channel: fetch(:fiesta_slack_channel) || "releases",
         username: fetch(:fiesta_slack_username) || "New Releases",
