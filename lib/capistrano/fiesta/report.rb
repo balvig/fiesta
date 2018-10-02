@@ -9,6 +9,7 @@ require "capistrano/fiesta/logger"
 require "capistrano/fiesta/story"
 require "capistrano/fiesta/auto_composed_story"
 require "capistrano/fiesta/release"
+require "capistrano/fiesta/timestamp_normalizer"
 
 module Capistrano
   module Fiesta
@@ -74,6 +75,12 @@ module Capistrano
         rescue Octokit::UnprocessableEntity => e
           Logger.warn "Unable to access GitHub. Message given was: #{e.message}"
           []
+        end
+
+        def last_released_at
+          if @last_released_at
+            TimestampNormalizer.new(@last_released_at).run
+          end
         end
 
         def github

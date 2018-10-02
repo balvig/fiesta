@@ -37,16 +37,10 @@ namespace :fiesta do
 
   def report_options
     {
-      last_released_at: last_released_at,
+      last_released_at: last_release,
       comment: fetch(:fiesta_comment),
       auto_compose: fetch(:fiesta_auto_compose)
     }
-  end
-
-  def last_released_at
-    if last_release
-      Time.parse(last_release + "Z")
-    end
   end
 
   def last_release
