@@ -71,7 +71,7 @@ module Capistrano
         end
 
         def merged_pull_requests
-          github.search_issues("base:master repo:#{repo} merged:>#{last_released_at&.iso8601}").items
+          github.search_issues("base:master repo:#{repo} merged:>#{last_released_at}").items
         rescue Octokit::UnprocessableEntity => e
           Logger.warn "Unable to access GitHub. Message given was: #{e.message}"
           []
@@ -79,7 +79,7 @@ module Capistrano
 
         def last_released_at
           if @last_released_at
-            TimestampNormalizer.new(@last_released_at).run
+            TimestampNormalizer.new(@last_released_at).run.iso8601
           end
         end
 
