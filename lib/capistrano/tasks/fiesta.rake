@@ -37,7 +37,7 @@ namespace :fiesta do
 
   def report_options
     {
-      last_release: last_release,
+      last_released_at: last_release,
       comment: fetch(:fiesta_comment),
       auto_compose: fetch(:fiesta_auto_compose)
     }

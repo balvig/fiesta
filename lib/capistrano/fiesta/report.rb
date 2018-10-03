@@ -9,12 +9,13 @@ require "capistrano/fiesta/logger"
 require "capistrano/fiesta/story"
 require "capistrano/fiesta/auto_composed_story"
 require "capistrano/fiesta/release"
+require "capistrano/fiesta/timestamp_normalizer"
 
 module Capistrano
   module Fiesta
     class Report
       extend AttrExtras.mixin
-      pattr_initialize :repo, [:last_release, :comment, :auto_compose]
+      pattr_initialize :repo, [:last_released_at, :comment, :auto_compose]
       attr_query :auto_compose?
 
       def announce(config = {})
@@ -77,8 +78,8 @@ module Capistrano
         end
 
         def last_released_at
-          if last_release
-            Time.parse(last_release + "Z00:00").iso8601
+          if @last_released_at
+            TimestampNormalizer.new(@last_released_at).run.iso8601
           end
         end
 
