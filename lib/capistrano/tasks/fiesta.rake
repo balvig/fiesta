@@ -27,7 +27,7 @@ namespace :fiesta do
   end
 
   def repo
-    RepoUrlParser.new(repo_url).repo
+    Capistrano::Fiesta::RepoUrlParser.new(repo_url).repo
   end
 
   def report
