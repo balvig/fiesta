@@ -18,7 +18,6 @@ namespace :fiesta do
   task :announce do
     run_locally do
       report.announce(slack_params)
-      report.create_release(timestamp)
       Capistrano::Fiesta::Logger.logs.each { |log| warn log }
     end
   end
