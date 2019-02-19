@@ -22,6 +22,16 @@ module Capistrano::Fiesta
       assert_equal "This thing is amazing", Story.new(pr).release_note
     end
 
+    def test_release_note_in_body_with_different_capitalization
+      pr = OpenStruct.new(body: "_Release Note: This thing is amazing_")
+      assert_equal "This thing is amazing", Story.new(pr).release_note
+    end
+
+    def test_release_note_in_body_with_plurals
+      pr = OpenStruct.new(body: "_Release Notes: This thing is amazing_")
+      assert_equal "This thing is amazing", Story.new(pr).release_note
+    end
+
     def test_images
       pr = OpenStruct.new(body: "one pic http://github.com/avatar.jpg and another http://google.com/fish.png")
       assert_equal %w{http://github.com/avatar.jpg http://google.com/fish.png}, Story.new(pr).images
