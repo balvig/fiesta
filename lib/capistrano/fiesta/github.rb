@@ -23,7 +23,7 @@ module Capistrano
         end
 
         def default_config
-          { access_token: hub_config["oauth_token"] }
+          { access_token: hub_config["oauth_token"] }.compact
         end
 
         def hub_config_path
