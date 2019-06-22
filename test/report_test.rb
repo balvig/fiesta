@@ -10,7 +10,7 @@ module Capistrano::Fiesta
   class ReportTest < Minitest::Test
     def setup
       stub_request(:get, /github.com\/search/).to_return_json(items: [{ title: "New login", body: "", html_url: "www.github.com" }])
-      stub_request(:post, "https://bobcats.slack.com/services/hooks/incoming-webhook?token=1234")
+      stub_request(:post, webhook)
     end
 
     def test_announce
@@ -21,7 +21,7 @@ module Capistrano::Fiesta
       expected = <<-ANNOUNCEMENT
 • New login
       ANNOUNCEMENT
-      announcement = Report.new(repo, last_released_at: "20151009145023").announce(team: 'bobcats', token: '1234')
+      announcement = Report.new(repo, last_released_at: "20151009145023").announce(webhook: webhook)
       assert_equal expected, announcement
       assert_requested github
     end
@@ -32,7 +32,7 @@ module Capistrano::Fiesta
       ANNOUNCEMENT
 
       report = Report.new(repo, comment: "Only include new features") # Not sure how to test the contents of the editor
-      announcement = report.announce(team: 'bobcats', token: '1234')
+      announcement = report.announce(webhook: webhook)
       assert_equal expected, announcement
     end
 
@@ -51,11 +51,10 @@ module Capistrano::Fiesta
     end
 
     def test_announce_with_options
-      Report.new(repo).announce(team: 'bobcats', token: '1234')
+      Report.new(repo).announce(webhook: webhook)
 
       post = {
-        team: 'bobcats',
-        token: '1234',
+        webhook: webhook,
         payload: {
           text: "• New login\n"
         }
@@ -64,7 +63,7 @@ module Capistrano::Fiesta
 
     def test_announce_with_no_stories
       stub_request(:get, /github.com/).to_return_json(items: [])
-      Report.new(repo).announce(team: 'bobcats', token: '1234')
+      Report.new(repo).announce(webhook: webhook)
       assert_equal "[FIESTA] Announcement blank, nothing posted to Slack", Logger.logs.last
     end
 
@@ -81,7 +80,7 @@ module Capistrano::Fiesta
       expected = <<-ANNOUNCEMENT
 • New feature
       ANNOUNCEMENT
-      announcement = Report.new(repo, last_released_at: "20151009145023", auto_compose: true).announce(team: 'bobcats', token: '1234')
+      announcement = Report.new(repo, last_released_at: "20151009145023", auto_compose: true).announce(webhook: webhook)
       assert_equal expected, announcement
     end
 
@@ -89,6 +88,10 @@ module Capistrano::Fiesta
 
       def repo
         "balvig/capistrano-fiesta"
+      end
+
+      def webhook
+        "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
       end
   end
 end

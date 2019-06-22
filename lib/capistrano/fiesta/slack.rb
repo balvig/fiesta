@@ -6,10 +6,10 @@ module Capistrano
   module Fiesta
     class Slack
       extend AttrExtras.mixin
-      pattr_initialize [:team, :token, :webhook, :payload]
+      pattr_initialize [:webhook, :payload]
 
       def post
-        uri = URI(webhook || "https://#{team}.slack.com/services/hooks/incoming-webhook?token=#{CGI.escape(token)}")
+        uri = URI(webhook)
         req = Net::HTTP::Post.new(uri)
         req.content_type = "application/json"
         req.body = payload.to_json
