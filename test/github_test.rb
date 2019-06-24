@@ -6,6 +6,8 @@ module Capistrano::Fiesta
       Github.config = { access_token: "ACCESS TOKEN" }
 
       assert_equal "ACCESS TOKEN", Github.client.access_token
+
+      Github.config = nil
     end
 
     def test_access_token_defaulting_to_env_value
