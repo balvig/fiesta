@@ -51,14 +51,9 @@ module Capistrano::Fiesta
     end
 
     def test_announce_with_options
+      stub = stub_request(:post, webhook).with(body: { text: "• New login\n" })
       Report.new(repo).announce(webhook: webhook)
-
-      post = {
-        webhook: webhook,
-        payload: {
-          text: "• New login\n"
-        }
-      }
+      assert_requested stub
     end
 
     def test_announce_with_no_stories
