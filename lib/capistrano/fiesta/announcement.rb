@@ -1,5 +1,5 @@
 require "attr_extras/explicit"
-require "capistrano/fiesta/slack_dummy"
+require "capistrano/fiesta/slack"
 
 module Capistrano
   module Fiesta
@@ -8,7 +8,7 @@ module Capistrano
       pattr_initialize :text, :config
 
       def post
-        client.post(options)
+        client.post
         text
       end
 
@@ -23,9 +23,7 @@ module Capistrano
         end
 
         def client
-          Slackistrano
-        rescue NameError
-          SlackDummy.new
+          Slack.new(options)
         end
     end
   end
