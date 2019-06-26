@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Capistrano::Fiesta
+module Fiesta
   class GithubTest < Minitest::Test
     def test_client_being_configurable
       Github.config = { access_token: "ACCESS TOKEN" }

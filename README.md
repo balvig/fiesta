@@ -1,9 +1,9 @@
-# capistrano-fiesta
+# fiesta
 
-capistrano-fiesta integrates capistrano with GitHub pull requests and Slack, making
+fiesta helps integrate deployment tools with GitHub pull requests and Slack, making
 sharing release reports with the rest of the team a breeze.
 
-When deploying, capistrano-fiesta will compile an editable list of pull
+When deploying, fiesta will compile an editable list of pull
 requests merged to master since the last release, pulling out any images from the descriptions so they can be attached as screenshots:
 
 <img src="https://cloud.githubusercontent.com/assets/104138/10676263/57b6bb44-7905-11e5-8df3-38e96a2a0685.png" width="60%" />
@@ -12,18 +12,50 @@ The edited content will be posted to Slack:
 
 <img src="https://cloud.githubusercontent.com/assets/104138/10676270/63f627b4-7905-11e5-88e7-b60c08aada99.png" width="60%" />
 
+## Usage
 
-## Installing
+Build a new report for the release:
 
-1. Add capistrano-fiesta to your application's Gemfile:
+```ruby
+report = Fiesta::Report.new('balvig/fiesta', {
+  last_released_at: '20180920074104',
+  comment: 'Only include new features',
+  auto_compose: true,
+})
+```
+
+Annouce the report to the Slack channel:
+
+```ruby
+report.announce(
+  webhook: 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX',
+  payload: {
+    channel: '#release',
+    username: 'New Releases',
+    icon_emoji: ':tada:'
+  }
+)
+```
+
+Save the report as a GitHub release:
+
+```ruby
+report.create_release('20180927145914')
+```
+
+## Integrating with Capistrano
+
+fiesta provides integration with Capistrano by default.
+
+1. Add fiesta to your application's Gemfile:
 
   ```ruby
-  gem 'capistrano-fiesta'
+  gem 'fiesta'
   ```
 2. Require in the capfile or appropriate stage and configure the Slack channel:
 
   ```ruby
-  require 'capistrano-fiesta'
+  require 'capistrano/fiesta'
   set :fiesta_slack_channel, '#release'
   set :slack_webhook 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'
   ```
@@ -31,7 +63,7 @@ The edited content will be posted to Slack:
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/balvig/capistrano-fiesta.
+Bug reports and pull requests are welcome on GitHub at https://github.com/balvig/fiesta.
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests.
 
 
