@@ -1,9 +1,9 @@
-# fiesta
+# Fiesta
 
-fiesta helps integrate deployment tools with GitHub pull requests and Slack, making
+Fiesta helps integrate deployment tools with GitHub pull requests and Slack, making
 sharing release reports with the rest of the team a breeze.
 
-When deploying, fiesta will compile an editable list of pull
+When deploying, Fiesta will compile an editable list of pull
 requests merged to master since the last release, pulling out any images from the descriptions so they can be attached as screenshots:
 
 <img src="https://cloud.githubusercontent.com/assets/104138/10676263/57b6bb44-7905-11e5-8df3-38e96a2a0685.png" width="60%" />
@@ -45,7 +45,7 @@ report.create_release('20180927145914')
 
 ## Integrating with Capistrano
 
-fiesta provides integration with Capistrano by default.
+Fiesta provides integration with Capistran.
 
 1. Add fiesta to your application's Gemfile:
 
@@ -59,7 +59,7 @@ fiesta provides integration with Capistrano by default.
   set :fiesta_slack_channel, '#release'
   set :slack_webhook 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'
   ```
-3. If you're using [hub](https://github.com/github/hub) or [pt-flow](https://github.com/balvig/pt-flow), your GitHub credentials should already be configured. Otherwise you can use the [ENV vars in Octokit](https://github.com/octokit/octokit.rb/blob/a98979107a4bf9741a05a1f751405f8a29f29b38/lib/octokit/default.rb#L42-L156) to configure GitHub access.
+3. If you're using [hub](https://github.com/github/hub), your GitHub credentials should already be configured. Otherwise you can use the [ENV vars in Octokit](https://github.com/octokit/octokit.rb/blob/a98979107a4bf9741a05a1f751405f8a29f29b38/lib/octokit/default.rb#L42-L156) to configure GitHub access.
 
 ## Contributing
 
