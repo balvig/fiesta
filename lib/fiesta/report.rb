@@ -14,7 +14,7 @@ require "fiesta/timestamp_normalizer"
 module Fiesta
   class Report
     extend AttrExtras.mixin
-    pattr_initialize :repo, [:last_released_at, :comment, :auto_compose]
+    pattr_initialize :repo, [:current_revision, :previous_revision, :comment, :auto_compose]
     attr_query :auto_compose?
 
     def announce(config = {})
@@ -70,16 +70,37 @@ module Fiesta
       end
 
       def merged_pull_requests
-        github.search_issues("base:master repo:#{repo} merged:>#{last_released_at}").items
+        github.search_issues("base:master repo:#{repo} #{merged_qualifier}").items
       rescue Octokit::UnprocessableEntity => e
         Logger.warn "Unable to access GitHub. Message given was: #{e.message}"
         []
       end
 
-      def last_released_at
-        if @last_released_at
-          TimestampNormalizer.new(@last_released_at).run.iso8601
+      def merged_qualifier
+        if merged_before || merged_after
+          "merged:#{merged_after&.iso8601 || '*'}..#{merged_before&.iso8601 || '*'}"
+        else
+          "is:merged"
         end
+      end
+
+      def merged_before
+        return unless current_revision
+        @_merged_before ||= github.commit(repo, current_revision).commit.committer.date + merge_leeway_seconds
+      rescue Octokit::UnprocessableEntity => e
+        Logger.warn "Unable to find a commit for #{current_revision}: #{e.message}"
+      end
+
+      def merged_after
+        return unless previous_revision
+        @_merged_after ||= github.commit(repo, previous_revision).commit.committer.date + merge_leeway_seconds
+      rescue Octokit::UnprocessableEntity => e
+        Logger.warn "Unable to find a commit for #{previous_revision}: #{e.message}"
+      end
+
+      def merge_leeway_seconds
+        # Merging a pull request can happen a few seconds after the change is committed
+        5
       end
 
       def github

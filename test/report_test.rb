@@ -9,20 +9,35 @@ module Fiesta
 
   class ReportTest < Minitest::Test
     def setup
+      stub_request(:get, "https://api.github.com/repos/balvig/fiesta/commits/b0de556").to_return_json(
+        commit: { committer: { date: Time.iso8601("2015-10-13T10:44:50Z") } }
+      )
+      stub_request(:get, "https://api.github.com/repos/balvig/fiesta/commits/21b8426").to_return_json(
+        commit: { committer: { date: Time.iso8601("2015-10-09T14:50:23Z") } }
+      )
       stub_request(:get, /github.com\/search/).to_return_json(items: [{ title: "New login", body: "", html_url: "www.github.com" }])
       stub_request(:post, webhook)
     end
 
     def test_announce
-      query = "base:master repo:balvig/fiesta merged:>2015-10-09T14:50:23Z"
+      query = "base:master repo:balvig/fiesta merged:2015-10-09T14:50:28Z..2015-10-13T10:44:55Z"
       response = { items: [{ title: "New login [Delivers #123]", body: "" }] }
-      github = stub_request(:get, "https://api.github.com:443/search/issues").with(query: { q: query }).to_return_json(response)
+      # WebMock cannot find a maching stub if a query string is specified using #with. See https://github.com/bblimke/webmock/issues/752.
+      github = stub_request(:get, "https://api.github.com:443/search/issues?q=#{query}").to_return_json(response)
 
       expected = <<-ANNOUNCEMENT
 • New login
       ANNOUNCEMENT
-      announcement = Report.new(repo, last_released_at: "20151009145023").announce(webhook: webhook)
+      announcement = Report.new(repo, current_revision: "b0de556", previous_revision: "21b8426").announce(webhook: webhook)
       assert_equal expected, announcement
+      assert_requested github
+    end
+
+    def test_announce_without_previous_revision
+      query = "base:master repo:balvig/fiesta merged:*..2015-10-13T10:44:55Z"
+      github = stub_request(:get, "https://api.github.com:443/search/issues?q=#{query}").to_return_json(items: [])
+
+      announcement = Report.new(repo, current_revision: "b0de556").announce(webhook: webhook)
       assert_requested github
     end
 
@@ -75,7 +90,7 @@ module Fiesta
       expected = <<-ANNOUNCEMENT
 • New feature
       ANNOUNCEMENT
-      announcement = Report.new(repo, last_released_at: "20151009145023", auto_compose: true).announce(webhook: webhook)
+      announcement = Report.new(repo, auto_compose: true).announce(webhook: webhook)
       assert_equal expected, announcement
     end
 
