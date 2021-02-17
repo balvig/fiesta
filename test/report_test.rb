@@ -14,6 +14,7 @@ module Fiesta
     end
 
     def test_announce
+      stub_github_repository_request
       query = "base:master repo:balvig/fiesta merged:>2015-10-09T14:50:23Z"
       response = { items: [{ title: "New login [Delivers #123]", body: "" }] }
       github = stub_request(:get, "https://api.github.com:443/search/issues").with(query: { q: query }).to_return_json(response)
@@ -27,6 +28,7 @@ module Fiesta
     end
 
     def test_announce_with_comment
+      stub_github_repository_request
       expected = <<-ANNOUNCEMENT
 • New login
       ANNOUNCEMENT
@@ -37,6 +39,7 @@ module Fiesta
     end
 
     def test_creating_release_on_github
+      stub_github_repository_request
       release_endpoint = stub_request(:post, "https://api.github.com/repos/balvig/fiesta/releases").with(body: { name: "20151009145023", body: "- [New login](www.github.com)", tag_name: "release-20151009145023" })
       Report.new(repo).create_release('20151009145023')
       assert_requested release_endpoint
@@ -51,6 +54,7 @@ module Fiesta
     end
 
     def test_announce_with_options
+      stub_github_repository_request
       stub = stub_request(:post, webhook).with(body: { text: "• New login\n" })
       Report.new(repo).announce(webhook: webhook)
       assert_requested stub
@@ -63,6 +67,7 @@ module Fiesta
     end
 
     def test_announce_with_auto_compose_mode
+      stub_github_repository_request
       response = {
         items: [
           { title: "No release note in body", body: "No notes" },
@@ -80,6 +85,10 @@ module Fiesta
     end
 
     private
+
+      def stub_github_repository_request
+        stub_request(:get, "https://api.github.com/repos/balvig/fiesta").to_return_json(default_branch: "master")
+      end
 
       def repo
         "balvig/fiesta"

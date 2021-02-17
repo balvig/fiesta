@@ -70,7 +70,8 @@ module Fiesta
       end
 
       def merged_pull_requests
-        github.search_issues("base:master repo:#{repo} merged:>#{last_released_at}").items
+        default_branch = github.repo(repo).default_branch
+        github.search_issues("base:#{default_branch} repo:#{repo} merged:>#{last_released_at}").items
       rescue Octokit::UnprocessableEntity => e
         Logger.warn "Unable to access GitHub. Message given was: #{e.message}"
         []
