@@ -4,7 +4,8 @@ Fiesta helps integrate deployment tools with GitHub pull requests and Slack, mak
 sharing release reports with the rest of the team a breeze.
 
 When deploying, Fiesta will compile an editable list of pull
-requests merged to master since the last release, pulling out any images from the descriptions so they can be attached as screenshots:
+requests merged to the default branch since the last release,
+pulling out any images from the descriptions so they can be attached as screenshots:
 
 <img src="https://cloud.githubusercontent.com/assets/104138/10676263/57b6bb44-7905-11e5-8df3-38e96a2a0685.png" width="60%" />
 
