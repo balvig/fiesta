@@ -45,6 +45,18 @@ module Fiesta
       assert_requested release_endpoint
     end
 
+    def test_creating_release_on_github_with_specific_sha
+      stub_github_repository_request
+      release_endpoint = stub_request(:post, "https://api.github.com/repos/balvig/fiesta/releases").with(
+        body: hash_including(
+          target_commitish: "abcdef"
+        ))
+
+      Report.new(repo).create_release('20151009145023', revision: "abcdef")
+
+      assert_requested release_endpoint
+    end
+
     def test_creating_release_with_no_stories
       stub_request(:get, /github.com/).to_return_json(items: [])
       release_endpoint = stub_request(:post, "https://api.github.com/repos/balvig/fiesta/releases")

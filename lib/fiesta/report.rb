@@ -22,9 +22,10 @@ module Fiesta
       Announcement.new(text, config).post
     end
 
-    def create_release(name = nil)
+    def create_release(name = nil, revision: nil)
       return Logger.warn "No new stories, skipping GitHub release" if stories.none?
-      Release.new(repo: repo, name: name, stories: stories).post
+
+      Release.new(repo: repo, name: name, stories: stories, revision: revision).post
     end
 
     def stories
